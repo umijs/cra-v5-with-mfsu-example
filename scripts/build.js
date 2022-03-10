@@ -47,7 +47,7 @@ const argv = process.argv.slice(2);
 const writeStatsJson = argv.indexOf('--stats') !== -1;
 
 // Generate configuration
-const config = configFactory('production');
+const config = configFactory.build('production');
 
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.

@@ -87,7 +87,7 @@ const hasJsxRuntime = (() => {
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
-module.exports = function (webpackEnv) {
+function getOriginWebpackConfig(webpackEnv, mfsu) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
 
@@ -422,6 +422,8 @@ module.exports = function (webpackEnv) {
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
+                  // [mfsu] 3. add mfsu babel plugins
+                  ...(mfsu ? mfsu.getBabelPlugins() : [])
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -632,7 +634,9 @@ module.exports = function (webpackEnv) {
       //   `index.html`
       // - "entrypoints" key: Array of files which are included in `index.html`,
       //   can be used to reconstruct the HTML if necessary
-      new WebpackManifestPlugin({
+
+      // Note: Not use `MFSU` with `WebpackManifestPlugin` in dev scene
+      isEnvProduction && new WebpackManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath: paths.publicUrlOrPath,
         generate: (seed, files, entrypoints) => {
@@ -751,3 +755,15 @@ module.exports = function (webpackEnv) {
     performance: false,
   };
 };
+
+module.exports = {
+  build: (...args) => getOriginWebpackConfig(...args),
+  dev: async (webpackEnv, mfsu) => {
+    const config = getOriginWebpackConfig(webpackEnv, mfsu);
+    // [mfsu] 4. inject mfsu webpack config
+    mfsu && await mfsu.setWebpackConfig({
+      config,
+    });
+    return config
+  }
+}

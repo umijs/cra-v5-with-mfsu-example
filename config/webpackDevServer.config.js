@@ -13,7 +13,7 @@ const sockHost = process.env.WDS_SOCKET_HOST;
 const sockPath = process.env.WDS_SOCKET_PATH; // default: '/ws'
 const sockPort = process.env.WDS_SOCKET_PORT;
 
-module.exports = function (proxy, allowedHost) {
+module.exports = function (proxy, allowedHost, mfsu) {
   const disableFirewall =
     !proxy || process.env.DANGEROUSLY_DISABLE_HOST_CHECK === 'true';
   return {
@@ -102,6 +102,12 @@ module.exports = function (proxy, allowedHost) {
     // `proxy` is run between `before` and `after` `webpack-dev-server` hooks
     proxy,
     onBeforeSetupMiddleware(devServer) {
+
+      // [mfsu] 2. add mfsu middleware
+      for (const middleware of mfsu.getMiddlewares()) {
+        devServer.app.use(middleware);
+      }
+
       // Keep `evalSourceMapMiddleware`
       // middlewares before `redirectServedPath` otherwise will not have any effect
       // This lets us fetch source contents from webpack for the error overlay

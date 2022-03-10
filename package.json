@@ -65,7 +65,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "clean": "rimraf .mfsu node_modules/.cache"
   },
   "eslintConfig": {
     "extends": [
@@ -140,5 +141,9 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "@umijs/mfsu": "4.0.0-rc.6",
+    "rimraf": "^3.0.2"
   }
 }
