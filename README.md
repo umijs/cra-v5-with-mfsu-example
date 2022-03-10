@@ -2,7 +2,7 @@
 
 `create-react-app` v5 与 mfsu 一起使用的例子。
 
-配置做法详见：
+配置做法详见：[**feat: support use mfsu dev**](https://github.com/fz6m/cra-with-mfsu/commit/94385856734e136aebd6d89b669d05796b090b21)
 
 注：
 
